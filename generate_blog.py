@@ -50,6 +50,46 @@ def format_date_pl(iso_date: str) -> str:
     return f"{d.day} {MONTHS_PL[d.month]} {d.year}"
 
 
+def generate_offers_html(offers: list) -> str:
+    if not offers:
+        return ""
+    cards = ""
+    for o in offers:
+        badge = f'<span class="offer-badge">{o["badge"]}</span>' if o.get("badge") else ""
+        featured_cls = " offer-card--featured" if o.get("featured") else ""
+        logo = o.get("logo", "")
+        logo_html = ""
+        if logo:
+            logo_html = (
+                f'<img src="https://www.google.com/s2/favicons?domain={logo}&sz=64" '
+                f'alt="{o["shop"]}" class="offer-logo-img" loading="lazy">'
+            )
+        plusy = "".join(
+            f'<li>{p}</li>' for p in (o.get("plusy") or [])[:3]
+        )
+        cards += f'''
+  <div class="offer-card{featured_cls}">
+    {badge}
+    <div class="offer-head">
+      <div class="offer-logo">{logo_html}</div>
+      <div class="offer-info">
+        <div class="offer-name">{o["name"]}</div>
+        <div class="offer-meta">{o["shop"]} &middot; {o["typ"]}</div>
+      </div>
+    </div>
+    <p class="offer-desc">{o["opis"]}</p>
+    {"<ul class='offer-plusy'>" + plusy + "</ul>" if plusy else ""}
+    <a href="{o["link"]}" class="offer-btn" target="_blank" rel="noopener sponsored">Sprawdz &rarr;</a>
+  </div>'''
+    return f'''
+<div class="offers-section">
+  <h2 class="offers-title">Polecane oferty finansowe</h2>
+  <p class="offers-sub">Linki sponsorowane &mdash; wybrane pod katem jakosci i warunkow</p>
+  {cards}
+  <p class="offers-legal">* Linki afiliacyjne. Oferty maja charakter informacyjny &mdash; sprawdz aktualne warunki u partnera.</p>
+</div>'''
+
+
 def generate_blog_post_html(article: dict) -> str:
     cat_label = CATEGORY_LABELS.get(article["category"], article["category"])
 
@@ -63,6 +103,8 @@ def generate_blog_post_html(article: dict) -> str:
         for faq in article["faq"]:
             q, a = faq[0], faq[1]
             faq_html += f'<div class="faq-item"><h3>{q}</h3><p>{a}</p></div>\n'
+
+    offers_html = generate_offers_html(article.get("offers", []))
 
     faq_schema = ""
     if article.get("faq"):
@@ -124,6 +166,26 @@ def generate_blog_post_html(article: dict) -> str:
     .faq-item p {{ margin-bottom: 0; }}
     footer {{ background: var(--bg1); border-top: 1px solid var(--border); padding: 2rem 0; margin-top: 4rem; text-align: center; color: var(--muted); font-size: .85rem; }}
     @media(max-width:600px) {{ h1 {{ font-size: 1.5rem; }} .container {{ padding: 0 1rem; }} }}
+    /* ---- Oferty affiliate ---- */
+    .offers-section {{ background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; margin: 2.5rem 0; }}
+    .offers-title {{ font-family:'Syne',sans-serif; font-size:1.2rem; font-weight:800; color:var(--gold); margin:0 0 .25rem; }}
+    .offers-sub {{ font-size:.8rem; color:var(--muted); margin:0 0 1.25rem; }}
+    .offer-card {{ background:var(--bg1); border:1px solid var(--border); border-radius:10px; padding:1.1rem 1.25rem; margin-bottom:.85rem; position:relative; transition:border-color .2s; }}
+    .offer-card:hover {{ border-color:rgba(240,180,41,.35); }}
+    .offer-card--featured {{ border-color:rgba(240,180,41,.45); background:rgba(240,180,41,.04); }}
+    .offer-badge {{ position:absolute; top:-10px; right:14px; background:var(--gold); color:#07090f; font-size:.65rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; padding:.2rem .6rem; border-radius:20px; }}
+    .offer-head {{ display:flex; align-items:center; gap:.85rem; margin-bottom:.6rem; }}
+    .offer-logo {{ width:36px; height:36px; border-radius:8px; background:rgba(255,255,255,.06); display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden; }}
+    .offer-logo-img {{ width:28px; height:28px; object-fit:contain; }}
+    .offer-name {{ font-weight:700; font-size:.95rem; color:var(--text); }}
+    .offer-meta {{ font-size:.75rem; color:var(--muted); margin-top:.1rem; }}
+    .offer-desc {{ font-size:.88rem; color:var(--muted); margin:.3rem 0 .5rem; opacity:1; }}
+    .offer-plusy {{ list-style:none; display:flex; flex-wrap:wrap; gap:.4rem; margin:.4rem 0 .75rem; }}
+    .offer-plusy li {{ background:rgba(240,180,41,.1); color:var(--gold2); font-size:.72rem; font-weight:600; padding:.2rem .6rem; border-radius:20px; }}
+    .offer-btn {{ display:inline-block; background:var(--gold); color:#07090f; font-weight:700; font-size:.82rem; padding:.45rem 1.1rem; border-radius:6px; text-decoration:none; transition:background .15s,transform .15s; }}
+    .offer-btn:hover {{ background:var(--gold2); color:#07090f; transform:translateY(-1px); }}
+    .offers-legal {{ font-size:.72rem; color:var(--muted); margin:1rem 0 0; opacity:.7; }}
+    @media(max-width:480px) {{ .offer-head {{ flex-wrap:wrap; }} }}
   </style>
 </head>
 <body>
@@ -151,6 +213,8 @@ def generate_blog_post_html(article: dict) -> str:
   <p class="intro">{article["intro"]}</p>
 
   {sections_html}
+
+  {offers_html}
 
   {faq_html}
 </main>
