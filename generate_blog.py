@@ -40,6 +40,12 @@ MONTHS_PL = {
 }
 
 
+# ── Adsterra ────────────────────────────────────────────────────
+ADSTERRA_BODY = '<script src="https://pl31664746.profitableratecpmnetwork.com/1f/89/fb/1f89fb8f1243de7528d8f1b284567785.js"></script>\n<script src="https://pl31664748.profitableratecpmnetwork.com/dd/3c/89/dd3c89d6ac47742712f86b5d6d6fb4d8.js"></script>\n'
+ADSTERRA_NATIVE = '<div class="adsterra-slot" style="margin:32px 0">\n<script async="async" data-cfasync="false" src="https://pl31664747.profitableratecpmnetwork.com/f7e200107315d2a089ef9a619a20d7b4/invoke.js"></script>\n<div id="container-f7e200107315d2a089ef9a619a20d7b4"></div>\n</div>\n'
+ADSTERRA_300 = '<div class="adsterra-slot" style="display:flex;justify-content:center;max-width:100%;overflow:hidden;margin:24px 0">\n<script>\n  atOptions = {\n    \'key\' : \'9092f4880069f15dd0c0b4d01274cde9\',\n    \'format\' : \'iframe\',\n    \'height\' : 250,\n    \'width\' : 300,\n    \'params\' : {}\n  };\n</script>\n<script src="https://www.highrevenueformat.com/9092f4880069f15dd0c0b4d01274cde9/invoke.js"></script>\n</div>\n'
+
+
 def load_articles():
     with open(DATA_FILE, encoding="utf-8") as f:
         return json.load(f)
@@ -212,11 +218,15 @@ def generate_blog_post_html(article: dict) -> str:
 
   <p class="intro">{article["intro"]}</p>
 
+  {ADSTERRA_300}
+
   {sections_html}
 
   {offers_html}
 
   {faq_html}
+
+  {ADSTERRA_NATIVE}
 </main>
 
 <footer>
@@ -225,7 +235,7 @@ def generate_blog_post_html(article: dict) -> str:
   </div>
 </footer>
 
-</body>
+{ADSTERRA_BODY}</body>
 </html>'''
 
 
@@ -284,7 +294,7 @@ def generate_blog_index(articles: list) -> str:
   {cards}
 </main>
 <footer><div class="container"><p>&copy; {date.today().year} FinRank. Wszystkie prawa zastrzezone.</p></div></footer>
-</body>
+{ADSTERRA_BODY}</body>
 </html>'''
 
 
