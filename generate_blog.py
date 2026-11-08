@@ -88,14 +88,14 @@ def generate_offers_html(offers: list) -> str:
     </div>
     <p class="offer-desc">{o["opis"]}</p>
     {"<ul class='offer-plusy'>" + plusy + "</ul>" if plusy else ""}
-    <a href="{o["link"]}" class="offer-btn" target="_blank" rel="noopener sponsored">Sprawdz &rarr;</a>
+    <a href="{o["link"]}" class="offer-btn" target="_blank" rel="noopener sponsored">Sprawdź &rarr;</a>
   </div>'''
     return f'''
 <div class="offers-section">
   <h2 class="offers-title">Polecane oferty finansowe</h2>
-  <p class="offers-sub">Linki sponsorowane &mdash; wybrane pod katem jakosci i warunkow</p>
+  <p class="offers-sub">Linki sponsorowane &mdash; wybrane pod kątem jakości i warunków</p>
   {cards}
-  <p class="offers-legal">* Linki afiliacyjne. Oferty maja charakter informacyjny &mdash; sprawdz aktualne warunki u partnera.</p>
+  <p class="offers-legal">* Linki afiliacyjne. Oferty mają charakter informacyjny &mdash; sprawdź aktualne warunki u partnera.</p>
 </div>'''
 
 
@@ -108,7 +108,7 @@ def generate_blog_post_html(article: dict) -> str:
 
     faq_html = ""
     if article.get("faq"):
-        faq_html = '<h2>Najczesciej zadawane pytania</h2>\n'
+        faq_html = '<h2>Najczęściej zadawane pytania</h2>\n'
         for faq in article["faq"]:
             q, a = faq[0], faq[1]
             faq_html += f'<div class="faq-item"><h3>{q}</h3><p>{a}</p></div>\n'
@@ -143,7 +143,7 @@ def generate_blog_post_html(article: dict) -> str:
   <script type="application/ld+json">
   {{"@context":"https://schema.org","@graph":[
     {{"@type":"Article","headline":"{_esc(article["title"])}","description":"{_esc(article["meta_desc"])}","datePublished":"{article["date"]}","dateModified":"{article["updated"]}","author":{{"@type":"Organization","name":"Redakcja FinRank"}},"publisher":{{"@type":"Organization","name":"FinRank","url":"{SITE_URL}"}},"url":"{SITE_URL}/blog/{article["slug"]}/","mainEntityOfPage":"{SITE_URL}/blog/{article["slug"]}/"}},
-    {{"@type":"BreadcrumbList","itemListElement":[{{"@type":"ListItem","position":1,"name":"Strona glowna","item":"{SITE_URL}"}},{{"@type":"ListItem","position":2,"name":"Blog","item":"{SITE_URL}/blog/"}},{{"@type":"ListItem","position":3,"name":"{_esc(article["title"])}","item":"{SITE_URL}/blog/{article["slug"]}/"}}]}}
+    {{"@type":"BreadcrumbList","itemListElement":[{{"@type":"ListItem","position":1,"name":"Strona główna","item":"{SITE_URL}"}},{{"@type":"ListItem","position":2,"name":"Blog","item":"{SITE_URL}/blog/"}},{{"@type":"ListItem","position":3,"name":"{_esc(article["title"])}","item":"{SITE_URL}/blog/{article["slug"]}/"}}]}}
     {faq_schema}
   ]}}
   </script>
@@ -202,7 +202,7 @@ def generate_blog_post_html(article: dict) -> str:
 <header>
   <div class="container">
     <a href="/" class="logo">FinRank</a>
-    <nav><a href="/">Strona glowna</a></nav>
+    <nav><a href="/">Strona główna</a></nav>
   </div>
 </header>
 
@@ -234,7 +234,7 @@ def generate_blog_post_html(article: dict) -> str:
 
 <footer>
   <div class="container">
-    <p>&copy; {date.today().year} FinRank. Wszystkie prawa zastrzezone.</p>
+    <p>&copy; {date.today().year} FinRank. Wszystkie prawa zastrzeżone.</p>
     {LEGAL_LINKS}
   </div>
 </footer>
@@ -292,12 +292,12 @@ def generate_blog_index(articles: list) -> str:
   </style>
 {ADSENSE}</head>
 <body>
-<header><div class="container"><a href="/" class="logo">FinRank</a><nav><a href="/">Strona glowna</a></nav></div></header>
+<header><div class="container"><a href="/" class="logo">FinRank</a><nav><a href="/">Strona główna</a></nav></div></header>
 <main class="container">
   <h1>Blog finansowy</h1>
   {cards}
 </main>
-<footer><div class="container"><p>&copy; {date.today().year} FinRank. Wszystkie prawa zastrzezone.</p>{LEGAL_LINKS}</div></footer>
+<footer><div class="container"><p>&copy; {date.today().year} FinRank. Wszystkie prawa zastrzeżone.</p>{LEGAL_LINKS}</div></footer>
 {ADSTERRA_BODY}</body>
 </html>'''
 
