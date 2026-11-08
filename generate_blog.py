@@ -41,7 +41,10 @@ MONTHS_PL = {
 
 
 # ── Adsterra ────────────────────────────────────────────────────
-ADSTERRA_BODY = '<script src="https://pl31664746.profitableratecpmnetwork.com/1f/89/fb/1f89fb8f1243de7528d8f1b284567785.js"></script>\n<script src="https://pl31664748.profitableratecpmnetwork.com/dd/3c/89/dd3c89d6ac47742712f86b5d6d6fb4d8.js"></script>\n'
+ADSENSE = '<!-- Google AdSense -->\n<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9406644927707143"\n     crossorigin="anonymous"></script>\n'
+LEGAL_LINKS = '<p><a href="/o-nas/">O nas</a> · <a href="/kontakt/">Kontakt</a> · <a href="/polityka-prywatnosci/">Polityka prywatności</a></p>'
+
+ADSTERRA_BODY ='<script src="https://pl31664746.profitableratecpmnetwork.com/1f/89/fb/1f89fb8f1243de7528d8f1b284567785.js"></script>\n<script src="https://pl31664748.profitableratecpmnetwork.com/dd/3c/89/dd3c89d6ac47742712f86b5d6d6fb4d8.js"></script>\n'
 ADSTERRA_NATIVE = '<div class="adsterra-slot" style="margin:32px 0">\n<script async="async" data-cfasync="false" src="https://pl31664747.profitableratecpmnetwork.com/f7e200107315d2a089ef9a619a20d7b4/invoke.js"></script>\n<div id="container-f7e200107315d2a089ef9a619a20d7b4"></div>\n</div>\n'
 ADSTERRA_300 = '<div class="adsterra-slot" style="display:flex;justify-content:center;max-width:100%;overflow:hidden;margin:24px 0">\n<script>\n  atOptions = {\n    \'key\' : \'9092f4880069f15dd0c0b4d01274cde9\',\n    \'format\' : \'iframe\',\n    \'height\' : 250,\n    \'width\' : 300,\n    \'params\' : {}\n  };\n</script>\n<script src="https://www.highrevenueformat.com/9092f4880069f15dd0c0b4d01274cde9/invoke.js"></script>\n</div>\n'
 
@@ -193,7 +196,7 @@ def generate_blog_post_html(article: dict) -> str:
     .offers-legal {{ font-size:.72rem; color:var(--muted); margin:1rem 0 0; opacity:.7; }}
     @media(max-width:480px) {{ .offer-head {{ flex-wrap:wrap; }} }}
   </style>
-</head>
+{ADSENSE}</head>
 <body>
 
 <header>
@@ -232,6 +235,7 @@ def generate_blog_post_html(article: dict) -> str:
 <footer>
   <div class="container">
     <p>&copy; {date.today().year} FinRank. Wszystkie prawa zastrzezone.</p>
+    {LEGAL_LINKS}
   </div>
 </footer>
 
@@ -286,14 +290,14 @@ def generate_blog_index(articles: list) -> str:
     .tag{{background:rgba(240,180,41,.15);color:var(--gold);padding:.15rem .5rem;border-radius:4px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}}
     footer{{background:var(--bg1);border-top:1px solid var(--border);padding:2rem 0;margin-top:4rem;text-align:center;color:var(--muted);font-size:.85rem}}
   </style>
-</head>
+{ADSENSE}</head>
 <body>
 <header><div class="container"><a href="/" class="logo">FinRank</a><nav><a href="/">Strona glowna</a></nav></div></header>
 <main class="container">
   <h1>Blog finansowy</h1>
   {cards}
 </main>
-<footer><div class="container"><p>&copy; {date.today().year} FinRank. Wszystkie prawa zastrzezone.</p></div></footer>
+<footer><div class="container"><p>&copy; {date.today().year} FinRank. Wszystkie prawa zastrzezone.</p>{LEGAL_LINKS}</div></footer>
 {ADSTERRA_BODY}</body>
 </html>'''
 
@@ -334,7 +338,7 @@ def update_index_carousel(articles: list):
     print(f"  zaktualizowano karuzelę w index.html ({len(latest)} kart)")
 
 
-def generate_sitemap(articles: list):
+def generate_sitemap(articles: list, extra_urls=()):
     today_str = date.today().isoformat()
     urls = [
         (SITE_URL + "/", "1.0"),
@@ -342,6 +346,8 @@ def generate_sitemap(articles: list):
     ]
     for a in articles:
         urls.append((f"{SITE_URL}/blog/{a['slug']}/", "0.8"))
+    for u in extra_urls:
+        urls.append((u, "0.3"))
 
     existing_sitemap = ROOT / "sitemap.xml"
     if existing_sitemap.exists():
@@ -364,6 +370,75 @@ def _esc(s: str) -> str:
     return s.replace('"', '&quot;').replace("'", "&#39;")
 
 
+def build_legal_pages() -> list:
+    """Strony wymagane przez AdSense: polityka prywatności, o nas, kontakt."""
+    name = "FinRank"
+    email = "biuro@fitnesspromo.online"
+    desc = "Niezależne rankingi giełd kryptowalut, pożyczek i kont bankowych."
+    css = (
+        "*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:#07090f;color:#e5e7eb;line-height:1.75}"
+        "header{border-bottom:1px solid #1f2937;padding:16px 20px}header a{font-weight:800;font-size:20px;color:#f0b429;text-decoration:none}"
+        "main{max-width:760px;margin:0 auto;padding:32px 20px 64px}h1{font-size:32px;line-height:1.2;margin:0 0 8px;color:#fff}"
+        "h2{font-size:21px;margin:32px 0 8px;color:#fff}p,li{font-size:16px}a{color:#f0b429}"
+        ".upd{color:#9ca3af;font-size:14px;margin-bottom:24px}footer{border-top:1px solid #1f2937;padding:24px 20px;text-align:center;font-size:14px;color:#9ca3af}"
+        "footer a{color:#9ca3af;margin:0 8px}"
+    )
+    footer = (
+        f'<footer><a href="/o-nas/">O nas</a><a href="/kontakt/">Kontakt</a>'
+        f'<a href="/polityka-prywatnosci/">Polityka prywatności</a><p>&copy; {date.today().year} {name}</p></footer>'
+    )
+
+    def page(slug, title, body):
+        html = (
+            f'<!DOCTYPE html>\n<html lang="pl">\n<head>\n<meta charset="UTF-8">\n'
+            f'<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+            f'<title>{title} | {name}</title>\n<meta name="description" content="{title} — {name}. {desc}">\n'
+            f'<meta name="robots" content="index, follow">\n<link rel="canonical" href="{SITE_URL}/{slug}/">\n'
+            f'{ADSENSE}<style>{css}</style>\n</head>\n<body>\n'
+            f'<header><a href="/">{name}</a></header>\n<main>\n<h1>{title}</h1>\n{body}\n</main>\n{footer}\n</body>\n</html>\n'
+        )
+        out = ROOT / slug
+        out.mkdir(parents=True, exist_ok=True)
+        (out / "index.html").write_text(html, encoding="utf-8")
+
+    today = date.today().isoformat()
+    page("polityka-prywatnosci", "Polityka prywatności", f"""
+<p class="upd">Ostatnia aktualizacja: {today}</p>
+<h2>1. Administrator serwisu</h2>
+<p>Administratorem serwisu {name} ({SITE_URL}) jest jego redakcja. Kontakt w sprawach prywatności i danych osobowych: <a href="mailto:{email}">{email}</a>.</p>
+<h2>2. Jakie dane zbieramy</h2>
+<p>Serwis nie prowadzi kont użytkowników. Podczas korzystania ze strony automatycznie przetwarzane są dane techniczne: adres IP, typ przeglądarki i urządzenia, odwiedzane podstrony, czas wizyty oraz źródło wejścia. Jeśli zapiszesz się na newsletter lub napiszesz do nas, przetwarzamy Twój adres e-mail wyłącznie w celu realizacji tej usługi lub odpowiedzi, a z newslettera możesz wypisać się w każdej chwili.</p>
+<h2>3. Pliki cookies i technologie śledzące</h2>
+<p>Serwis korzysta z plików cookies i podobnych technologii własnych oraz podmiotów trzecich, w celu analizy ruchu, wyświetlania reklam i rozliczania programów partnerskich. Możesz w każdej chwili usunąć lub zablokować pliki cookies w ustawieniach przeglądarki.</p>
+<h2>4. Reklamy — Google AdSense i inne sieci reklamowe</h2>
+<p>W serwisie wyświetlane są reklamy dostarczane przez Google AdSense oraz inne sieci reklamowe. Dostawcy zewnętrzni, w tym Google, używają plików cookies do wyświetlania reklam na podstawie wcześniejszych odwiedzin użytkownika w tym i innych serwisach. Spersonalizowane reklamy możesz wyłączyć w <a href="https://adssettings.google.com" rel="noopener nofollow">Ustawieniach reklam Google</a>. Więcej informacji: <a href="https://policies.google.com/technologies/ads" rel="noopener nofollow">jak Google wykorzystuje dane z witryn partnerów</a>.</p>
+<h2>5. Linki partnerskie</h2>
+<p>Część linków w serwisie to linki partnerskie (afiliacyjne). Jeśli klikniesz taki link i zawrzesz umowę u partnera, możemy otrzymać prowizję. Nie zwiększa to ceny, którą płacisz, a prowizja nie wpływa na treść rankingów.</p>
+<h2>6. Informacja o ryzyku</h2>
+<p>Treści w serwisie mają charakter wyłącznie edukacyjny i informacyjny. Nie stanowią rekomendacji inwestycyjnej ani doradztwa finansowego. Inwestowanie, w tym w kryptowaluty, wiąże się z ryzykiem utraty całości zainwestowanych środków, a pożyczki i kredyty — z kosztami i ryzykiem zadłużenia.</p>
+<h2>7. Twoje prawa</h2>
+<p>Zgodnie z RODO masz prawo dostępu do swoich danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia, wniesienia sprzeciwu oraz wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych. Aby skorzystać z tych praw, napisz na <a href="mailto:{email}">{email}</a>.</p>
+<h2>8. Zmiany polityki</h2>
+<p>Możemy aktualizować niniejszą politykę. Aktualna wersja jest zawsze dostępna na tej stronie, a data ostatniej zmiany widnieje na górze.</p>
+""")
+    page("o-nas", "O nas", f"""
+<p>{name} to serwis informacyjny. {desc}</p>
+<h2>Cel serwisu</h2>
+<p>Zbieramy w jednym miejscu informacje i porównania produktów finansowych, aby ułatwić czytelnikom zrozumienie kosztów i ryzyka. Treści mają charakter edukacyjny i nie stanowią porady inwestycyjnej ani finansowej.</p>
+<h2>Jak się utrzymujemy</h2>
+<p>Serwis jest bezpłatny dla czytelników. Utrzymujemy go z reklam oraz z prowizji od linków partnerskich. Oznaczamy takie linki, a prowizja nie decyduje o kolejności w rankingach.</p>
+<h2>Błędy i uwagi</h2>
+<p>Oferty i warunki produktów finansowych często się zmieniają. Jeśli zauważysz nieaktualne dane, napisz do nas: <a href="mailto:{email}">{email}</a>. Poprawiamy zgłoszone nieścisłości.</p>
+""")
+    page("kontakt", "Kontakt", f"""
+<p>Masz pytanie, uwagę do artykułu albo propozycję współpracy? Napisz do nas.</p>
+<h2>E-mail</h2>
+<p><a href="mailto:{email}">{email}</a></p>
+<p>Odpowiadamy zwykle w ciągu kilku dni roboczych. W sprawach dotyczących danych osobowych zobacz <a href="/polityka-prywatnosci/">Politykę prywatności</a>.</p>
+""")
+    return [f"{SITE_URL}/polityka-prywatnosci/", f"{SITE_URL}/o-nas/", f"{SITE_URL}/kontakt/"]
+
+
 def build():
     articles = load_articles()
     print(f"FinRank Blog Generator — {len(articles)} artykulow\n")
@@ -383,7 +458,8 @@ def build():
     print("  wygenerowano blog/index.html")
 
     update_index_carousel(articles)
-    generate_sitemap(articles)
+    legal_urls = build_legal_pages()
+    generate_sitemap(articles, legal_urls)
 
     print("\nGotowe!")
 
